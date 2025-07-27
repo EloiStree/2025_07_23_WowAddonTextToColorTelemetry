@@ -28,7 +28,10 @@ MAIN_CODE.lua
 ```
 
 ⬇️ QR code would be a solution if addons could draw pixel but they are something close the bar code:  
-`a b c d e  f g h  i j k l  m n o p q r s t u v w x  y z 0 1 2 3 4 5 6 7 8 9 ; . | ,`  
+```
+a b c d e  f g h  i j k l  m n o p q r s t u v w x  y z 
+1 2 3 4 5 6 7 8 9 0 $ . % * + - / 
+```  
 Download it here: [https://fonts2u.com/free-3-of-9-regular.font](https://fonts2u.com/free-3-of-9-regular.font) 
 
 
