@@ -36,3 +36,7 @@ Download it here: [https://fonts2u.com/free-3-of-9-regular.font](https://fonts2u
 
 
 ⬇️ Create Fonts folder for the `.ttf`
+
+
+
+> Note: Working on this topic, remind me of this episode [Leran the ancient](https://www.youtube.com/watch?v=Y6lOQUo-su4)
