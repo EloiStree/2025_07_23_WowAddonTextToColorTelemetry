@@ -1,0 +1,18 @@
+## Interface: 110100, 11507
+## Title: |cff0070DEColor Telemetry |r
+## Author: Éloi Strée
+## Version: 2025.7.27
+## Notes: Allows to export telemetry from color block with Webcam.
+## Notes-url: https://github.com/EloiStree/2025_07_23_WowAddonTextToColorTelemetry
+## DefaultState: enabled
+## SavedVariables: MEMO_ADDITIONAL_LUA_CODE MEMO_REGION_CC MEMO_SERVER_NAME
+## Fonts/BarcodeFont.ttf
+
+
+STATIC_FUNCTION.lua
+STATIC_VARIABLE.lua
+STATIC_CALL_WHEN_IN_GAME.lua
+STATIC_CLOCK.lua
+Feature/FEATURE_GET_TARGET_UNIQUE_ID.lua
+STATIC_LUA_CODE_TO_DISPLAY.lua
+MAIN_CODE.lua
