@@ -7,6 +7,7 @@
 ## DefaultState: enabled
 ## SavedVariables: MEMO_ADDITIONAL_LUA_CODE MEMO_REGION_CC MEMO_SERVER_NAME
 ## Fonts/BarcodeFont.ttf
+## Fonts/VerticalB58.ttf
 
 
 STATIC_FUNCTION.lua
