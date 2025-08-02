@@ -40,14 +40,22 @@ end
 
 
 
-
 function turn_guid_target_to_char()
+    local has_target = UnitGUID("target")
+    local has_mouse_over = UnitGUID("mouseover")
 
-    local c1r, c1g, c1b, c2r, c2g, c2b = get_player_as_color('target')
+    local c1r, c1g, c1b, c2r, c2g, c2b = 0,0,0,0,0,0
+    if has_target then
+        c1r, c1g, c1b, c2r, c2g, c2b = getPlayerAsColor("target")
+    elseif has_mouse_over then
+        c1r, c1g, c1b, c2r, c2g, c2b = getPlayerAsColor("mouseover")
+    end
 
-    return int_to_char(c1r) .. int_to_char(c1g) .. int_to_char(c1b) .. int_to_char(c2r) .. int_to_char(c2g) .. int_to_char(c2b)
-
+    return int_to_char(c1r * 255) .. int_to_char(c1g * 255) .. int_to_char(c1b * 255)
+        .. int_to_char(c2r * 255) .. int_to_char(c2g * 255) .. int_to_char(c2b * 255)
 end
+
+
 
 
 function int_to_char(value)
@@ -448,7 +456,17 @@ end
 
 
 function getPlayerAsColorFocus()
-    return getPlayerAsColor("target")
+
+    local has_mouse_over = UnityId("target")
+    if has_mouse_over then
+        return getPlayerAsColor("target")
+    end
+    local has_mouse_over = UnityId("mouseover")
+    if has_mouse_over then
+        return getPlayerAsColor("mouseover")
+    end
+    
+    return 0,0,0,0,0,0
 end
 
 function getPlayerAsColorCurrent()
