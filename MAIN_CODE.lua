@@ -1,5 +1,11 @@
 
 
+
+
+
+
+display_line_around_screen_with_auto_update()
+
 local long_clock_frame_count = 0
 
 function add_frame_to_clock_frame_count()
@@ -44,8 +50,8 @@ local fontPath = "Interface\\AddOns\\ColorTelemetry\\Fonts\\Vertical4BitsSquare.
 --local fontPath = "Interface\\AddOns\\ColorTelemetry\\Fonts\\free3of9.ttf"
 -- Create the main frame to take all the space
 local frameCode = CreateFrame("Frame", "BarcodeFrame", UIParent, "BackdropTemplate")
-frameCode:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 0, 0)
-frameCode:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 0, 0)
+frameCode:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 30, -30)
+frameCode:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 30, -30)
 frameCode:SetHeight(UIParent:GetHeight() * 0.1)
 frameCode:Show()
 

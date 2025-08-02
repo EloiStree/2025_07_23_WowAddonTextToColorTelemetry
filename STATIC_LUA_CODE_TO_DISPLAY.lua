@@ -17,19 +17,178 @@ function get_text_to_display()
 
 
 
+ 
+    result = result .. get_time_as_several_5chars()
     result = result .. get_player_map_x_one_char()
     result = result .. get_player_map_y_one_char()
     result = result .. get_player_angle360_one_char()
+    result = result .. get_player_mobility_state_as_one_char()
+    result = result .. get_target_combat_state_as_one_char_part1()
     result = result .. get_player_life_one_char()
     result = result .. get_player_mana_or_energy_one_char()
     result = result .. get_player_xp_percent_one_char()
-    result = result .. get_player_world_map_x_several_char()
-    result = result .. get_player_world_map_y_several_char()
+    result = result .. get_player_current_level_as_one_char()
+    result = result .. get_player_world_map_x_several_3char()
+    result = result .. get_player_world_map_y_several_3char()
     result = result .. get_allies12_life_on_4bits()
     result = result .. get_allies24_life_on_4bits()
+    result = result .. turn_guid_target_to_char()
 
     return result
 end
+
+
+
+
+
+function turn_guid_target_to_char()
+
+    local c1r, c1g, c1b, c2r, c2g, c2b = get_player_as_color('target')
+
+    return int_to_char(c1r) .. int_to_char(c1g) .. int_to_char(c1b) .. int_to_char(c2r) .. int_to_char(c2g) .. int_to_char(c2b)
+
+end
+
+
+function int_to_char(value)
+    if value == nil then
+        return 'A'
+    end
+    local intValue = math.floor(value)
+    if intValue < 0 then
+        intValue = 0
+    elseif intValue > 255 then
+        intValue = 255
+    end
+    return string.char(intValue)
+end
+
+
+local binary_10000000_128 = 128
+local binary_01000000_64 = 64
+local binary_00100000_32 = 32
+local binary_00010000_16 = 16
+local binary_00001000_8 = 8
+local binary_00000100_4 = 4
+local binary_00000010_2 = 2
+local binary_00000001_1 = 1
+
+
+function get_player_current_level_as_one_char()
+    local playerLevel = UnitLevel("player")
+    if playerLevel == nil then
+        return int_to_char(0)
+    end
+    return int_to_char(playerLevel)
+end
+
+function get_player_mobility_state_as_one_char()
+
+    local hasGround = IsOnGround()
+    local isFalling = IsPlayerFalling()
+    local isSwimming = IsPlayerSwimming()
+    local isMounted = IsPlayerMounted()
+    local isFlying = IsPlayerFlying()
+    local isSteathing = IsPlayerSteathing()
+    local isInTaxi = IsInTaxi()
+    local isPlayerInCombat = IsPlayerInCombat()
+
+
+    return TurnBooleanToChar(hasGround, isFalling, isSwimming, isMounted, isFlying, isSteathing, isInTaxi, isPlayerInCombat)
+end
+function get_player_combat_state_as_one_char()
+
+   
+    return TurnBooleanToChar(isPlayerDeath, isInCombat, isCasting)
+end
+
+
+-- DID NOT USE BUT CAN BE USEFUL
+--  local isPlayerDeath = IsPlayerDeath()
+--     local isInCombat = IsPlayerInCombat()
+--     local isCasting = IsCasting()
+
+        -- IsUnderPercentBreathing(98) and 1 or 0,     -- 13 DONT CHANGE
+        -- IsUnderPercentBreathing(20) and 1 or 0,     -- 14 DONT CHANGE
+        -- IsUnderPercentFatigue(98) and 1 or 0,      -- 15 DONT CHANGE
+        -- IsUnderPercentFatigue(20) and 1 or 0,      -- 16 DONT CHANGE
+        -- IsTargetFullLife() and 1 or 0,   --7 DONT CHANGE
+        -- IsTargetWithin10Yards() and 1 or 0,   --8 DONT CHANGE
+        -- IsTargetWithin30Yards() and 1 or 0,   --9 DONT CHANGE
+        -- IsTargetHasCorruption() and 1 or 0,   
+        -- IsTargetHasAgony() and 1 or 0,  
+
+
+function get_target_combat_state_as_one_char_part1()
+    return TurnBooleanToChar(
+        HasTarget() and 1 or 0,                   --1 DONT CHANGE
+        IsTargetPlayer() and 1 or 0,              --2 DONT CHANGE
+        IsTargetEnemy() and 1 or 0,               --3 DONT CHANGE
+        IsTargetInCombat() and 1 or 0,            --4 DONT CHANGE
+        IsTargetCasting() and 1 or 0,             --5 DONT CHANGE
+        IsTargetDeath() and 1 or 0,               --6 DONT CHANGE
+        IsTargetFullLife() and 1 or 0,            --7 DONT CHANGE
+        IsTargetFocusingPlayer() and 1 or 0       --10 DONT CHANGE
+    )
+end
+
+
+function get_time_as_several_5chars()
+    local now = time()  -- Use real-world timestamp instead of GetTime()
+    local year = tonumber(date("%Y", now))
+    local month = tonumber(date("%m", now))
+    local day = tonumber(date("%d", now))
+    local hour = tonumber(date("%H", now))
+    local minute = tonumber(date("%M", now))
+    local second = tonumber(date("%S", now))
+
+    local classicHardcoreDigit = 0
+    local isWowClassic = false
+    if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC or
+        WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC or
+        WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+           classicHardcoreDigit = classicHardcoreDigit + 1
+    end
+
+    local isWowHardcore = is_on_hardcore_mode_server()
+    if isWowHardcore then
+        classicHardcoreDigit = classicHardcoreDigit + 1
+    end
+
+    
+    local hasDiscoverZone = HasDiscoveredZoneLastSeconds(5)
+    local hasPlayerTarget= HasPlayerTargetNotCurrentOrPartyMember()
+    
+    if hasDiscoverZone then
+        minute = minute + binary_10000000_128
+    end  
+    if hasPlayerTarget then
+        minute = minute + binary_01000000_64
+    end
+
+    if IsGatheringHerbs()  then
+        second = second + binary_10000000_128
+    end
+    if IsGatheringMining()  then
+        second = second + binary_01000000_64
+    end
+
+    local yearDecate = math.floor(year / 10) -- decade
+    local yearUnit = year % 10 -- unit
+
+    local char_monthAndYearDecate = int_to_char(month * 10 + yearDecate )
+    local char_day = int_to_char(day +classicHardcoreDigit*100)
+    local char_hourAndYearUnit = int_to_char( hour*10 +yearUnit)
+    local char_seconds = int_to_char(second)
+    local char_minutes = int_to_char(minute)
+
+
+    -- print(string.format("Year: %d, Month: %d, Day: %d, Hour: %02d, Minute: %02d, Second: %02d",
+    --     year, month, day, hour, minute, second))
+    return char_monthAndYearDecate .. char_day .. char_hourAndYearUnit .. char_minutes .. char_seconds
+end
+
+
 
 
 
@@ -65,31 +224,29 @@ function get_allies24_life_on_4bits()
 end
 
 
-function int_to_char(value)
-    if value == nil then
-        return "0"
-    end
-    local intValue = math.floor(value)
-    if intValue < 0 then
-        intValue = 0
-    elseif intValue > 255 then
-        intValue = 255
-    end
-    return string.char(intValue)
-end
 
 function get_player_life_one_char()
+
+    if not UnitExists("player") or UnitIsDeadOrGhost("player") == 1 then
+        return int_to_char(0)
+    end
+
     local percentHealth = UnitHealth("player") / UnitHealthMax("player")
     if percentHealth == nil then
-        return 0
+        return int_to_char(0)
     end
     return int_to_char(percentHealth * 255)
 end
 
+
 function get_player_mana_or_energy_one_char()
+    if not UnitExists("player") or UnitIsDeadOrGhost("player") == 1 then
+        return int_to_char(0)
+    end
+
     local percentMana = UnitPower("player") / UnitPowerMax("player")
     if percentMana == nil then
-        return 0
+        return int_to_char(0)
     end
     return int_to_char(percentMana * 255)
 end
@@ -148,7 +305,7 @@ function parse_float_value_to_signed_short_double_bytes(given_float)
     return b1, b2, b3
 end
 
-function get_player_world_map_x_several_char()
+function get_player_world_map_x_several_3char()
     
     local result =0
     -- local isInDonjon = IsInInstance()
@@ -168,7 +325,7 @@ end
 
 
 
-function get_player_world_map_y_several_char()
+function get_player_world_map_y_several_3char()
     
     local result =0
     -- local isInDonjon = IsInInstance()
@@ -339,5 +496,26 @@ function getWorldPosition(trueXFalseY)
     end
     -- print ("RGB "..r.." "..g.." "..b)
     return r/255.0, g/255.0, b/255.0
+end
 
+
+function get_target_guid_as_bytes()
+    local target_guid_int = get_target_unique_id(true, true)
+    if not target_guid_int then
+        return int_to_char(0), int_to_char(0), int_to_char(0)
+    end
+
+    local first_digit =string.sub(tostring(target_guid_int), 1, 1)
+    if first_digit == "0" then
+        target_guid_int = 1 -- Ensure we don't return zero
+    end    
+
+    if target_guid_int%10==1 then
+        target_guid_int = math.floor(target_guid_int /10)
+    end
+
+    local b1 = target_guid_int % 256
+    local b2 = math.floor(target_guid_int / 256) % 256
+    local b3 = math.floor(target_guid_int / (256 * 256)) % 256
+    return int_to_char(b1), int_to_char(b2), int_to_char(b3)
 end

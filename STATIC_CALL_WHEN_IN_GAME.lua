@@ -4,6 +4,9 @@ end
 
 function hello_world()
     print("Hello World function called.")
+    local current_realm = GetRealmName() or "Unknown Realm"
+    print("Current realm: " .. current_realm)
+    --print("Realm unique ID: " .. GetRealmID())
 end
 
 -- List of future functions to call
