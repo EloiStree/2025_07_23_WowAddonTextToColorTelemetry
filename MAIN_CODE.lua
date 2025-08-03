@@ -52,7 +52,7 @@ local fontPath = "Interface\\AddOns\\ColorTelemetry\\Fonts\\Vertical4BitsSquare.
 local frameCode = CreateFrame("Frame", "BarcodeFrame", UIParent, "BackdropTemplate")
 frameCode:SetPoint("TOPLEFT", UIParent, "TOPLEFT", 30, -30)
 frameCode:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", 30, -30)
-frameCode:SetHeight(UIParent:GetHeight() * 0.1)
+frameCode:SetHeight(UIParent:GetHeight() * 0.1) 
 frameCode:Show()
 
 -- Remove resizing and moving
@@ -128,14 +128,14 @@ end
 local brightness = 0.65
 -- Create barcode font strings stacked vertically
 frameCode.text_black   = createBarcodeFontString(frameCode, {0, 0, 0, 1})
-frameCode.text_hide_zero    = createBarcodeFontString(frameCode, {0, 0, 0, 1})
 frameCode.text_red     = createBarcodeFontString(frameCode, {brightness, 0, 0, 1})
 frameCode.text_green   = createBarcodeFontString(frameCode, {0, brightness, 0, 1})
 frameCode.text_blue    = createBarcodeFontString(frameCode, {0, 0, brightness, 1})
+--frameCode.text_hide_zero    = createBarcodeFontString(frameCode, {0, 0, 0, 1})
 frameCode.text_cyan    = createBarcodeFontString(frameCode, {0, brightness, brightness, 1})
-frameCode.text_yellow  = createBarcodeFontString(frameCode, {brightness, brightness, 0, 1})
-frameCode.text_magenta = createBarcodeFontString(frameCode, {brightness, 0, brightness, 1})
-frameCode.text_white   = createBarcodeFontString(frameCode, {1, 1, 1, 1})
+-- frameCode.text_yellow  = createBarcodeFontString(frameCode, {brightness, brightness, 0, 1})
+-- frameCode.text_magenta = createBarcodeFontString(frameCode, {brightness, 0, brightness, 1})
+ -- frameCode.text_white   = createBarcodeFontString(frameCode, {1, 1, 1, 1})
 
 
 
@@ -173,8 +173,7 @@ end
 function get_utf8_from_brgb_index(gg, colorid)
     local b1, b2, b3, b4 = get_brgb_from_index(gg)
 
-    
-    if b1 ~= colorid and b2 ~= colorid and b3 ~= colorid and b4 ~= colorid then
+        if b1 ~= colorid and b2 ~= colorid and b3 ~= colorid and b4 ~= colorid then
         return "a"
     elseif b1 == colorid and b2 ~= colorid and b3 ~= colorid and b4 ~= colorid then
         return "b"
@@ -223,27 +222,32 @@ function set_text_to_display_brgb(text)
     local hide_zero = "p"
     for i = 1, #text do
         local char = text:sub(i, i)
-        local jj = string.byte(char) - 1 -- Convert to 0-based index
-        black_string   = black_string   .. get_utf8_from_brgb_index(jj, black)
-        red_string     = red_string     .. get_utf8_from_brgb_index(jj, red)
-        green_string   = green_string   .. get_utf8_from_brgb_index(jj, green)
-        blue_string    = blue_string    .. get_utf8_from_brgb_index(jj, blue)
+        local jj = string.byte(char)
+            local black_char = get_utf8_from_brgb_index(jj, black)
+            local red_char = get_utf8_from_brgb_index(jj, red)
+            local green_char = get_utf8_from_brgb_index(jj, green)
+            local blue_char = get_utf8_from_brgb_index(jj, blue)
+        black_string   = black_string   .. black_char
+        red_string     = red_string     .. red_char
+        green_string   = green_string   .. green_char
+        blue_string    = blue_string    .. blue_char
         cyan_string    = cyan_string    .. get_utf8_from_brgb_index(jj, cyan)
-        yellow_string  = yellow_string  .. get_utf8_from_brgb_index(jj, yellow)
-        magenta_string = magenta_string .. get_utf8_from_brgb_index(jj, magenta)
+        -- yellow_string  = yellow_string  .. get_utf8_from_brgb_index(jj, yellow)
+        -- magenta_string = magenta_string .. get_utf8_from_brgb_index(jj, magenta)
         white_string   = white_string   .. get_utf8_from_brgb_index(jj, white)
         hide_zero      = hide_zero      .. "0"
     end
-    white_string = white_string .. "p"
+
+    cyan_string = cyan_string .. "p"
     frameCode.text_black:SetText(black_string)
     frameCode.text_red:SetText(red_string)
     frameCode.text_green:SetText(green_string)
     frameCode.text_blue:SetText(blue_string)
     frameCode.text_cyan:SetText(cyan_string)
-    frameCode.text_yellow:SetText(yellow_string)
-    frameCode.text_magenta:SetText(magenta_string)
-    frameCode.text_white:SetText(white_string)
-    frameCode.text_hide_zero:SetText(hide_zero)
+    -- frameCode.text_yellow:SetText(yellow_string)
+    -- frameCode.text_magenta:SetText(magenta_string)
+    --frameCode.text_white:SetText(white_string)
+    -- frameCode.text_hide_zero:SetText(hide_zero)
 end
 
 local function set_text_to_display_all_index()
@@ -257,7 +261,7 @@ local function set_text_to_display_all_index()
     local white_string = ""
     local hide_zero     = ""
     local ll = 0
-    for i = 1, 8096 do
+    for i = 1, 256 do
         if i == 2 then
             ll = secondsCounter
         else
@@ -268,9 +272,9 @@ local function set_text_to_display_all_index()
         local char_red = get_utf8_from_brgb_index(ll, red)
         local char_green = get_utf8_from_brgb_index(ll, green)
         local char_blue = get_utf8_from_brgb_index(ll, blue)
-        local char_cyan = get_utf8_from_brgb_index(ll, cyan)
-        local char_yellow = get_utf8_from_brgb_index(ll, yellow)
-        local char_magenta = get_utf8_from_brgb_index(ll, magenta)
+        -- local char_cyan = get_utf8_from_brgb_index(ll, cyan)
+        -- local char_yellow = get_utf8_from_brgb_index(ll, yellow)
+        -- local char_magenta = get_utf8_from_brgb_index(ll, magenta)
         local char_white = get_utf8_from_brgb_index(ll, white)
         -- Always use '7' for black string
         black_string = black_string .. char_black
@@ -288,8 +292,8 @@ local function set_text_to_display_all_index()
     frameCode.text_green:SetText(green_string)
     frameCode.text_blue:SetText(blue_string)
     frameCode.text_cyan:SetText(cyan_string)
-    frameCode.text_yellow:SetText(yellow_string)
-    frameCode.text_magenta:SetText(magenta_string)
+    -- frameCode.text_yellow:SetText(yellow_string)
+    -- frameCode.text_magenta:SetText(magenta_string)
     frameCode.text_white:SetText(white_string)
     frameCode.text_hide_zero:SetText(hide_zero)
     print("Displaying all indices:".. secondsCounter)

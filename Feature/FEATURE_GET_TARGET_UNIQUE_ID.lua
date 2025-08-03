@@ -35,18 +35,26 @@ local bool_display_guid_changed = true
 local previous_guid = nil
 
 
-function get_player_as_color(selection)
-    local targetGUID = UnitGUID(selection)
+local ignore_player_guid_in_telemetry = true
+local ignore_party_guid_in_telemetry = true
 
-    if targetGUID and targetGUID ~= previous_guid then
-        previous_guid = targetGUID
-        if bool_display_guid_changed then
-            print("Target GUID changed: " .. targetGUID)
-        end
+function getPlayerAsColor(selection)
+    local targetGUID = UnitGUID(selection)
+    local playerGUID = UnitGUID("player")
+    local party1GUID = UnitGUID("party1")
+    local party2GUID = UnitGUID("party2")
+    local party3GUID = UnitGUID("party3")
+    local party4GUID = UnitGUID("party4")
+
+    if ignore_player_guid_in_telemetry and playerGUID == targetGUID then
+        return 0, 0, 0, 0, 0, 0 -- white
+    end
+    if ignore_party_guid_in_telemetry and (party1GUID == targetGUID or party2GUID == targetGUID or party3GUID == targetGUID or party4GUID == targetGUID) then
+        return 0, 0, 0, 0, 0, 0 -- white
     end
 
     if not targetGUID then
-        return 1, 1, 1, 1, 1, 1 -- white
+        return 0, 0, 0, 0, 0, 0 -- white
     else
         local string_ffffffffffff = "000000000000"
         if not UnitIsPlayer(selection) then
@@ -69,13 +77,29 @@ function get_player_as_color(selection)
             string_ffffffffffff = string.lower(string.gsub(string.gsub(targetGUID, "-", ""), "Player", ""))
         end
         local hex = string.sub(string_ffffffffffff, 1, 12)
-        local c1r = local_FF_To_Decimal(string.sub(hex, 1, 2))
-        local c1g = local_FF_To_Decimal(string.sub(hex, 3, 4))
-        local c1b = local_FF_To_Decimal(string.sub(hex, 5, 6))
-        local c2r = local_FF_To_Decimal(string.sub(hex, 7, 8))
-        local c2g = local_FF_To_Decimal(string.sub(hex, 9, 10))
-        local c2b = local_FF_To_Decimal(string.sub(hex, 11, 12))
+        local c1r = local_FF_To_Percent(string.sub(hex, 1, 2))
+        local c1g = local_FF_To_Percent(string.sub(hex, 3, 4))
+        local c1b = local_FF_To_Percent(string.sub(hex, 5, 6))
+        local c2r = local_FF_To_Percent(string.sub(hex, 7, 8))
+        local c2g = local_FF_To_Percent(string.sub(hex, 9, 10))
+        local c2b = local_FF_To_Percent(string.sub(hex, 11, 12))
         return c1r, c1g, c1b, c2r, c2g, c2b
     end
-    return 1, 1, 1, 1, 1, 1 -- white
+    return 0, 0, 0, 0, 0, 0 -- white
+end
+
+function getPlayerAsColorFocus()
+    local has_target = UnitGUID("target")
+    if has_target then
+        return getPlayerAsColor("target")
+    end
+    local has_mouseover = UnitGUID("mouseover")
+    if has_mouseover then
+        return getPlayerAsColor("mouseover")
+    end
+    return 0, 0, 0, 0, 0, 0
+end
+
+function getPlayerAsColorCurrent()
+    return getPlayerAsColor("player")
 end

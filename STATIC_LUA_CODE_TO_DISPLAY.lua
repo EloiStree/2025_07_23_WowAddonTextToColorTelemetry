@@ -3,7 +3,7 @@ G_BARCODE_TEXT_COLOR = {0, 0, 0, 1}
 
 function get_text_to_display()
 
-    local result = ""
+    local result = string.char(0) -- Start with a null character to ensure the string is not empty
 
 -- BASE 64
 --     local result = [[
@@ -16,6 +16,16 @@ function get_text_to_display()
 -- local result = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
 
 
+-- DEBUG START AND END OF CHAR AVAILABLE
+    -- local string_0_256 = ""
+    -- for i = 0, 10 do
+    --     string_0_256 = string_0_256 .. string.char(i)
+    -- end 
+    -- string_0_256 = string_0_256 .. string.char(0)..string.char(0)
+    -- for i = 245, 255 do
+    --     string_0_256 = string_0_256 .. string.char(i)
+    -- end
+    -- result = result .. string_0_256
 
  
     result = result .. get_time_as_several_5chars()
@@ -33,6 +43,11 @@ function get_text_to_display()
     result = result .. get_allies12_life_on_4bits()
     result = result .. get_allies24_life_on_4bits()
     result = result .. turn_guid_target_to_char()
+ 
+    local bool_use_bhaptics = true
+    if bool_use_bhaptics then
+        result = result .. get_bhaptics_as_left_to_right_8chars()
+    end
 
     return result
 end
@@ -405,73 +420,6 @@ end
 
 
 
-
-
-function getPlayerAsColor(selection)
-    local targetGUID = UnitGUID(selection)
-    
-    if not targetGUID then
-        return 1, 1, 1, 1, 1, 1 -- white
-    else
-        local string_ffffffffffff = "000000000000"
-        if not UnitIsPlayer(selection) then
-            if targetGUID and targetGUID:find("Creature") then
-                string_ffffffffffff = "FF0000000000"
-                local unitType, zero, serverId, instanceId, zoneUid, npcId, spawnUid = strsplit("-", targetGUID)
-
-                -- convert npcid in decimal to hexadecimal
-                local idAsDecimal = tonumber(npcId, 10) or 0
-                local hex = string.format("%x", idAsDecimal)
-
-                -- copy from right to left characters to fill the string_ffffffffffff
-                local hexLength = string.len(hex)
-                local startIndex = 12 - hexLength
-                string_ffffffffffff = string.sub(string_ffffffffffff, 1, startIndex) .. hex .. string.sub(string_ffffffffffff, startIndex + hexLength + 1)
-                --print("GUID: " .. targetGUID .. " Hex: " .. string_ffffffffffff)
-            end
-            if targetGUID and targetGUID:find("Vehicle") then
-                string_ffffffffffff = "FD0000000000"
-            end
-            if targetGUID and targetGUID:find("Pet") then
-                string_ffffffffffff = "FE0000000000"
-            end
-        else
-            string_ffffffffffff = string.lower(string.gsub(string.gsub(targetGUID, "-", ""), "Player", ""))
-        end
-        local hex = string.sub(string_ffffffffffff, 1, 12)
-        local c1r = FF_To_Percent(string.sub(hex, 1, 2))
-        local c1g = FF_To_Percent(string.sub(hex, 3, 4))
-        local c1b = FF_To_Percent(string.sub(hex, 5, 6))
-        local c2r = FF_To_Percent(string.sub(hex, 7, 8))
-        local c2g = FF_To_Percent(string.sub(hex, 9, 10))
-        local c2b = FF_To_Percent(string.sub(hex, 11, 12))
-
-        return c1r, c1g, c1b, c2r, c2g, c2b
-    end
-
-    return 1, 1, 1, 1, 1, 1 -- white
-end
-
-
-
-
-function getPlayerAsColorFocus()
-
-    local has_mouse_over = UnityId("target")
-    if has_mouse_over then
-        return getPlayerAsColor("target")
-    end
-    local has_mouse_over = UnityId("mouseover")
-    if has_mouse_over then
-        return getPlayerAsColor("mouseover")
-    end
-    
-    return 0,0,0,0,0,0
-end
-
-function getPlayerAsColorCurrent()
-    return getPlayerAsColor("player")
-end
 
 
 function getHealAndXp()
