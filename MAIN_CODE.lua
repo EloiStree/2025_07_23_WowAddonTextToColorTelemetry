@@ -352,3 +352,12 @@ end
 
 --add_to_clock_1_second(updateBarcodeAndText)
 add_to_clock_10_frames(updateBarcodeAndText)
+
+
+function display_custom_text_size()
+    
+    local displayText = get_text_to_display()
+    print("Display text: " .. #displayText)
+end
+
+add_to_clock_5_seconds(display_custom_text_size )
