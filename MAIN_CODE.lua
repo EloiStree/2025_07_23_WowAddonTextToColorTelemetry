@@ -109,7 +109,8 @@ frameCode.bg:SetColorTexture(unpack(backgroundColor))
 -- Barcode font size and spacing
 local function getBarHeight()
     -- Use almost all available height, leaving a small margin at the top
-    return frameCode:GetHeight() - 6
+    return frameCode:GetHeight() -- - 6
+    --return 600
 end
 
 local function createBarcodeFontString(parent, color)
@@ -125,14 +126,15 @@ local function createBarcodeFontString(parent, color)
     return fs
 end
 
-local brightness = 0.65
+local brightness = 0.6
 -- Create barcode font strings stacked vertically
 frameCode.text_black   = createBarcodeFontString(frameCode, {0, 0, 0, 1})
-frameCode.text_red     = createBarcodeFontString(frameCode, {brightness, 0, 0, 1})
+frameCode.text_red     = createBarcodeFontString(frameCode, {brightness+0.1, 0, 0, 1})
 frameCode.text_green   = createBarcodeFontString(frameCode, {0, brightness, 0, 1})
 frameCode.text_blue    = createBarcodeFontString(frameCode, {0, 0, brightness, 1})
 --frameCode.text_hide_zero    = createBarcodeFontString(frameCode, {0, 0, 0, 1})
-frameCode.text_cyan    = createBarcodeFontString(frameCode, {0, brightness, brightness, 1})
+--frameCode.text_cyan    = createBarcodeFontString(frameCode, {0, brightness, brightness, 1})
+frameCode.text_cyan    = createBarcodeFontString(frameCode, {1,1,1, 1})
 -- frameCode.text_yellow  = createBarcodeFontString(frameCode, {brightness, brightness, 0, 1})
 -- frameCode.text_magenta = createBarcodeFontString(frameCode, {brightness, 0, brightness, 1})
  -- frameCode.text_white   = createBarcodeFontString(frameCode, {1, 1, 1, 1})
